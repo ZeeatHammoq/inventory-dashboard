@@ -151,7 +151,10 @@ export const ItemSelector: React.FC = () => {
                       className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24"
                       alt={item.itemDescription}
                       onError={(err) => {
-                        console.log("error laoding image", err);
+                        console.log(
+                          "error laoding image",
+                          err.currentTarget.src
+                        );
                         setImageErrors((prev: any) => ({
                           ...prev,
                           [`${selectedDepartment}-${item.itemDescription}`]:
