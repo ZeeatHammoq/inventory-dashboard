@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useInventoryStore } from "../stores/inventoryStore";
 import { useAuthStore } from "../stores/authStore";
-import { Shirt, ArrowLeft, LogOut } from "lucide-react";
+import { Shirt, ArrowLeft, LogOut, AlertCircle } from "lucide-react";
 import { Breadcrumb } from "./Breadcrumb";
 
 export const ItemSelector: React.FC = () => {
@@ -10,6 +10,13 @@ export const ItemSelector: React.FC = () => {
   const { items, selectedDepartment, setSelectedItem, reset } =
     useInventoryStore();
   const { logout } = useAuthStore();
+
+  if (!selectedDepartment) {
+    reset();
+    navigate("/department");
+  }
+
+  const [imageErrors, setImageErrors] = useState<any>({});
 
   // Filter items by selected department
   const departmentItems = useMemo(() => {
@@ -115,8 +122,8 @@ export const ItemSelector: React.FC = () => {
       </div>
 
       {/* Items Grid */}
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+      <div className="max-w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
           {departmentItems.map((item, index) => (
             <button
               key={index}
@@ -124,16 +131,28 @@ export const ItemSelector: React.FC = () => {
               className="bg-[#EBF5FF] hover:bg-[#FFFFFF] border-4 border-[#004787] hover:border-[#0C76D0] rounded-lg p-3 sm:p-4 lg:p-6 transition-all duration-200 hover:shadow-lg group min-h-[120px] sm:min-h-[140px] lg:min-h-[160px] flex flex-col items-center justify-center text-center touch-manipulation"
             >
               <div className="mb-2 sm:mb-3 lg:mb-4">
-                <img
-                  src={`/images/items/${selectedDepartment
-                    .toLowerCase()
-                    .replace(/[^a-z]/g, "")}/${item.itemDescription
-                    .toLowerCase()
-                    .replace(/^(men's |women's |unisex )/, "")
-                    .replace(/[^a-z]/g, "")}.png`}
-                  className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-16 lg:w-16"
-                  alt={item.itemDescription}
-                />
+                {!imageErrors[
+                  `${selectedDepartment}-${item.itemDescription}`
+                ] ? (
+                  <img
+                    src={`/images/items/${selectedDepartment
+                      .toLowerCase()
+                      .replace(/[^a-z]/g, "")}/${item.itemDescription
+                      .toLowerCase()
+                      .replace(/^(men's |women's |unisex )/, "")
+                      .replace(/[^a-z]/g, "")}.png`}
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24"
+                    alt={item.itemDescription}
+                    onError={() => {
+                      setImageErrors((prev: any) => ({
+                        ...prev,
+                        [`${selectedDepartment}-${item.itemDescription}`]: true,
+                      }));
+                    }}
+                  />
+                ) : (
+                  <AlertCircle className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 text-red-500" />
+                )}
               </div>
               <h3 className="font-medium text-gray-900 text-xs sm:text-sm lg:text-base leading-tight px-1">
                 {item.itemDescription.replace(/^(Men's |Women's |Unisex )/, "")}

@@ -10,6 +10,11 @@ export const TagGenerator: React.FC = () => {
   const { selectedItem, selectedDepartment, reset } = useInventoryStore();
   const { logout } = useAuthStore();
 
+  if (!selectedDepartment || !selectedItem) {
+    reset();
+    navigate("/department");
+  }
+
   const handleDepartmentBack = () => {
     reset();
     navigate("/departments");
