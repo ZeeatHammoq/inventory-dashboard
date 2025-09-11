@@ -15,8 +15,6 @@ export const DepartmentSelector: React.FC = () => {
   } = useInventoryStore();
   const { logout } = useAuthStore();
 
-  console.log("departments ui", departments);
-
   useEffect(() => {
     fetchInventoryData();
   }, [fetchInventoryData]);

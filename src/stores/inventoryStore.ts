@@ -22,7 +22,6 @@ export const useInventoryStore = create<InventoryState>((set,) => ({
 
             const data: ApiResponse = await response.json();
 
-            console.log(data)
 
             // Parse the data (skip header row)
             const items: InventoryItem[] = data.data.values.slice(1).map(row => ({
@@ -32,12 +31,10 @@ export const useInventoryStore = create<InventoryState>((set,) => ({
                 avgDaysToSell: row[3]
             }));
 
-            console.log("items", items)
 
             // Extract unique departments
             const departments = [...new Set(items.map(item => item.department))];
 
-            console.log("departments", departments)
 
             set({
                 items,
