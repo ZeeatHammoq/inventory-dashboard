@@ -24,6 +24,11 @@ export const ItemSelector: React.FC = () => {
     return items.filter((item) => item.department === selectedDepartment);
   }, [items, selectedDepartment]);
 
+  if (departmentItems.length === 1) {
+    setSelectedItem(departmentItems[0]);
+    navigate("/tag");
+  }
+
   const handleItemSelect = (item: (typeof items)[0]) => {
     setSelectedItem(item);
     navigate("/tag");
@@ -47,7 +52,7 @@ export const ItemSelector: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-600 to-slate-800 p-3 sm:p-6 lg:p-8">
       {/* Navigation Header */}
-      <div className="bg-white rounded-lg shadow-lg mb-4 sm:mb-6 lg:mb-8 overflow-hidden py-2 px-4">
+      <div className="bg-white rounded-lg shadow-lg mb-2 sm:mb-3 lg:mb-4 overflow-hidden py-2 px-4">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center">
           <button

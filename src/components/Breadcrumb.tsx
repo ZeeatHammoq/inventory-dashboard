@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useInventoryStore } from "../stores/inventoryStore";
+// import { useInventoryStore } from "../stores/inventoryStore";
 
 interface BreadcrumbProps {
   departmentName?: string;
@@ -12,12 +12,12 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   itemName,
 }) => {
   const navigate = useNavigate();
-  const { reset } = useInventoryStore();
+  // const { reset } = useInventoryStore();
 
-  const handleDepartmentBack = () => {
-    reset();
-    navigate("/departments");
-  };
+  // const handleDepartmentBack = () => {
+  //   reset();
+  //   navigate("/departments");
+  // };
 
   const handleItemBack = () => {
     navigate("/items");
@@ -28,7 +28,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       {departmentName && (
         <>
           <button
-            onClick={handleDepartmentBack}
+            onClick={handleItemBack}
             className="flex items-center space-x-4 hover:bg-slate-600 px-4 py-1 rounded-lg transition-colors"
           >
             <div className="flex-shrink-0">
@@ -47,8 +47,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
             <>
               <span className="mx-6 text-slate-300 text-2xl">›</span>
               <button
-                onClick={handleItemBack}
-                className="flex items-center space-x-4 hover:bg-slate-600 px-4 py-1 rounded-lg transition-colors"
+                // onClick={handleItemBack}
+                className="flex items-center space-x-4  px-4 py-1 rounded-lg transition-colors"
               >
                 <div className="flex-shrink-0">
                   <img

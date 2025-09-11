@@ -15,11 +15,14 @@ export const useInventoryStore = create<InventoryState>((set,) => ({
         try {
             const response = await fetch('https://ai-lite-api.hammoq.com/v1/api/inventory-data');
 
+
             if (!response.ok) {
                 throw new Error('Failed to fetch inventory data');
             }
 
             const data: ApiResponse = await response.json();
+
+            console.log(data)
 
             // Parse the data (skip header row)
             const items: InventoryItem[] = data.data.values.slice(1).map(row => ({
@@ -29,8 +32,12 @@ export const useInventoryStore = create<InventoryState>((set,) => ({
                 avgDaysToSell: row[3]
             }));
 
+            console.log("items", items)
+
             // Extract unique departments
             const departments = [...new Set(items.map(item => item.department))];
+
+            console.log("departments", departments)
 
             set({
                 items,

@@ -15,6 +15,8 @@ export const DepartmentSelector: React.FC = () => {
   } = useInventoryStore();
   const { logout } = useAuthStore();
 
+  console.log("departments ui", departments);
+
   useEffect(() => {
     fetchInventoryData();
   }, [fetchInventoryData]);
@@ -66,7 +68,7 @@ export const DepartmentSelector: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-600 to-slate-800 p-3 sm:p-6 lg:p-8">
       {/* Navigation Header */}
-      <div className="bg-white rounded-lg shadow-lg mb-4 sm:mb-6 lg:mb-8 overflow-hidden py-2 px-4">
+      <div className="bg-white rounded-lg shadow-lg mb-2 sm:mb-3 lg:mb-4 overflow-hidden py-2 px-4">
         {/* above */}
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center">
@@ -125,7 +127,7 @@ export const DepartmentSelector: React.FC = () => {
       {/* Department Grid */}
       <div className="max-w-full mx-auto">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-          {departments.slice(0, 10).map((department) => (
+          {departments.map((department) => (
             <button
               key={department}
               onClick={() => handleDepartmentSelect(department)}
