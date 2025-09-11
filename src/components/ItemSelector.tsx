@@ -124,41 +124,56 @@ export const ItemSelector: React.FC = () => {
       {/* Items Grid */}
       <div className="max-w-full">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-          {departmentItems.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => handleItemSelect(item)}
-              className="bg-[#EBF5FF] hover:bg-[#FFFFFF] border-4 border-[#004787] hover:border-[#0C76D0] rounded-lg p-3 sm:p-4 lg:p-6 transition-all duration-200 hover:shadow-lg group min-h-[120px] sm:min-h-[140px] lg:min-h-[160px] flex flex-col items-center justify-center text-center touch-manipulation"
-            >
-              <div className="mb-2 sm:mb-3 lg:mb-4">
-                {!imageErrors[
-                  `${selectedDepartment}-${item.itemDescription}`
-                ] ? (
-                  <img
-                    src={`/images/items/${selectedDepartment
-                      .toLowerCase()
-                      .replace(/[^a-z]/g, "")}/${item.itemDescription
-                      .toLowerCase()
-                      .replace(/^(men's |women's |unisex )/, "")
-                      .replace(/[^a-z]/g, "")}.png`}
-                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24"
-                    alt={item.itemDescription}
-                    onError={() => {
-                      setImageErrors((prev: any) => ({
-                        ...prev,
-                        [`${selectedDepartment}-${item.itemDescription}`]: true,
-                      }));
-                    }}
-                  />
-                ) : (
-                  <AlertCircle className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 text-red-500" />
-                )}
-              </div>
-              <h3 className="font-medium text-gray-900 text-xs sm:text-sm lg:text-base leading-tight px-1">
-                {item.itemDescription.replace(/^(Men's |Women's |Unisex )/, "")}
-              </h3>
-            </button>
-          ))}
+          {departmentItems.map((item, index) => {
+            const path =
+              selectedDepartment.toLowerCase() === "shoes and accessories"
+                ? item.itemDescription
+                : item.itemDescription.replace(
+                    /^(Men's |Women's |Unisex |Infant)/,
+                    ""
+                  );
+            return (
+              <button
+                key={index}
+                onClick={() => handleItemSelect(item)}
+                className="bg-[#EBF5FF] hover:bg-[#FFFFFF] border-4 border-[#004787] hover:border-[#0C76D0] rounded-lg p-3 sm:p-4 lg:p-6 transition-all duration-200 hover:shadow-lg group min-h-[120px] sm:min-h-[140px] lg:min-h-[160px] flex flex-col items-center justify-center text-center touch-manipulation"
+              >
+                <div className="mb-2 sm:mb-3 lg:mb-4">
+                  {!imageErrors[
+                    `${selectedDepartment}-${item.itemDescription}`
+                  ] ? (
+                    <img
+                      src={`/images/items/${selectedDepartment
+                        .toLowerCase()
+                        .replace(/[^a-z]/g, "")}/${path
+                        .toLowerCase()
+                        .replace(/[^a-z]/g, "")}.png`}
+                      className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24"
+                      alt={item.itemDescription}
+                      onError={(err) => {
+                        console.log("error laoding image", err);
+                        setImageErrors((prev: any) => ({
+                          ...prev,
+                          [`${selectedDepartment}-${item.itemDescription}`]:
+                            true,
+                        }));
+                      }}
+                    />
+                  ) : (
+                    <AlertCircle className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 text-red-500" />
+                  )}
+                </div>
+                <h3 className="font-medium text-gray-900 text-xs sm:text-sm lg:text-base leading-tight px-1">
+                  {selectedDepartment.toLowerCase() === "shoes and accessories"
+                    ? item.itemDescription
+                    : item.itemDescription.replace(
+                        /^(Men's |Women's |Unisex |Infant)/,
+                        ""
+                      )}
+                </h3>
+              </button>
+            );
+          })}
         </div>
 
         {/* Empty State */}
