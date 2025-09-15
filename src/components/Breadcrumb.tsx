@@ -19,19 +19,19 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   let itemImagePath = "";
 
-  switch (departmentName?.toLowerCase()) {
+  switch (itemName?.toLowerCase()) {
     case "wares":
       itemImagePath = `/images/departments/${departmentName
-        .toLowerCase()
+        ?.toLowerCase()
         .replace(/[^a-z]/g, "")}.png`;
       break;
     case "electronics":
       itemImagePath = `/images/departments/${departmentName
-        .toLowerCase()
+        ?.toLowerCase()
         .replace(/[^a-z]/g, "")}.png`;
       break;
     default:
-      `/images/items/${departmentName
+      itemImagePath = `/images/items/${departmentName
         ?.toLowerCase()
         ?.replace(/[^a-z]/g, "")}/${itemName
         ?.toLowerCase()
