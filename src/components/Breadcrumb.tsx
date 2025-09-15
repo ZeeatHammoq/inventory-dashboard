@@ -12,16 +12,33 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   itemName,
 }) => {
   const navigate = useNavigate();
-  // const { reset } = useInventoryStore();
-
-  // const handleDepartmentBack = () => {
-  //   reset();
-  //   navigate("/departments");
-  // };
 
   const handleItemBack = () => {
     navigate("/items");
   };
+
+  let itemImagePath = "";
+
+  switch (departmentName?.toLowerCase()) {
+    case "wares":
+      itemImagePath = `/images/departments/${departmentName
+        .toLowerCase()
+        .replace(/[^a-z]/g, "")}.png`;
+      break;
+    case "electronics":
+      itemImagePath = `/images/departments/${departmentName
+        .toLowerCase()
+        .replace(/[^a-z]/g, "")}.png`;
+      break;
+    default:
+      `/images/items/${departmentName
+        ?.toLowerCase()
+        ?.replace(/[^a-z]/g, "")}/${itemName
+        ?.toLowerCase()
+        .replace(/^(men's |women's |unisex )/, "")
+        .replace(/[^a-z]/g, "")}.png`;
+      break;
+  }
 
   return (
     <div className="bg-[#202020] text-white px-6 py-2 rounded-lg mb-6 flex items-center border-2 border-[#004787]">
@@ -51,16 +68,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 className="flex items-center space-x-4  px-4 py-1 rounded-lg transition-colors"
               >
                 <div className="flex-shrink-0">
-                  <img
-                    src={`/images/items/${departmentName
-                      .toLowerCase()
-                      .replace(/[^a-z]/g, "")}/${itemName
-                      .toLowerCase()
-                      .replace(/^(men's |women's |unisex )/, "")
-                      .replace(/[^a-z]/g, "")}.png`}
-                    className="h-8 w-8"
-                    alt={""}
-                  />
+                  <img src={itemImagePath} className="h-8 w-8" alt={""} />
                 </div>
                 <span className="font-medium text-xl">
                   {itemName.replace(/^(Men's |Women's |Unisex )/, "")}
