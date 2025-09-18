@@ -8,8 +8,9 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Login } from "./components/Login";
 import { DepartmentSelector } from "./components/DepartmentSelector";
 import { ItemSelector } from "./components/ItemSelector";
-import { TagGenerator } from "./components/TagGenerator";
+// import { TagGenerator } from "./components/TagGenerator";
 import { useAuthStore } from "./stores/authStore";
+import { TagGenerator } from "./components/TagGenerator/TagGenerator";
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);

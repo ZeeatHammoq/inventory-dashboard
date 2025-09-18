@@ -41,7 +41,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   }
 
   return (
-    <div className="bg-[#202020] text-white px-6 py-2 rounded-lg mb-6 flex items-center border-2 border-[#004787]">
+    <div className="bg-[#202020] text-white px-6 py-2   flex items-center border-2 border-[#004787]">
       {departmentName && (
         <>
           <button
@@ -75,6 +75,19 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 </span>
               </button>
             </>
+          )}
+
+          {itemName ? (
+            <div className="ml-auto ">
+              <div className="flex items-center gap-3 text-white text-sm font-medium">
+                <span>Color of the week</span>
+                <div className="bg-green-500 px-4 py-1 rounded text-white font-bold">
+                  Green
+                </div>
+              </div>
+            </div>
+          ) : (
+            ""
           )}
         </>
       )}

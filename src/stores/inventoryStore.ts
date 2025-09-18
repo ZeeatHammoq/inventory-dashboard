@@ -22,14 +22,26 @@ export const useInventoryStore = create<InventoryState>((set,) => ({
 
             const data: ApiResponse = await response.json();
 
+            const headers = data.data.values[0];
 
             // Parse the data (skip header row)
             const items: InventoryItem[] = data.data.values.slice(1).map(row => ({
                 department: row[0],
                 itemDescription: row[1],
                 currentPrice: row[2],
-                avgDaysToSell: row[3]
+                avgDaysToSell: row[3],
+                price: row.filter((val, index) => {
+                    if (headers[index].toLowerCase().includes("price") && headers[index].toLowerCase() !== "current price" && val) return true
+
+                    return false
+                }).sort((a, b) => parseFloat(a.replace("$", "")) - parseFloat(b.replace("$", ""))),
+                size: row.filter((val, index) => {
+                    if (headers[index].toLowerCase().includes("size") && val) return true
+
+                    return false
+                })
             }));
+
 
 
             // Extract unique departments

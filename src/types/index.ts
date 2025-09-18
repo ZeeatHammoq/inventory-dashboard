@@ -3,6 +3,8 @@ export interface InventoryItem {
     itemDescription: string;
     currentPrice: string;
     avgDaysToSell: string;
+    price: string[]
+    size: string[]
 }
 
 export interface ApiResponse {
