@@ -12,8 +12,17 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
   selectedSize,
   onSizeChange,
 }) => {
+  console.log(sizes);
   const [showKeypad, setShowKeypad] = useState(false);
   const customInputRef = useRef<HTMLDivElement>(null);
+
+  const getScale = () => {
+    const baseWidth = 1920;
+    const currentWidth = window.innerWidth;
+    return Math.max(0.6, Math.min(2.0, currentWidth / baseWidth));
+  };
+
+  const scale = getScale();
 
   const handleCustomInputClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -23,56 +32,104 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
   return (
     <div className="rounded-lg w-full h-full flex flex-col">
       {/* Header */}
-      <div className="bg-[#595555] rounded-t-lg flex items-center justify-between p-3">
-        <h3 className="text-white  text-lg">Quantity</h3>
+      <div
+        className="bg-[#595555] rounded-t-lg flex items-center justify-between"
+        style={{ padding: `${12 * scale}px` }}
+      >
+        <h3 className="text-white font-bold" style={{ fontSize: `${22 * scale}px` }}>
+          Size
+        </h3>
         <div className="flex items-center">
-          <span className="text-black text-sm  bg-[#BEBEBE] px-2 py-1 rounded-tl rounded-bl">
+          <span
+            className="text-black bg-[#BEBEBE] rounded-tl rounded-bl"
+            style={{
+              fontSize: `${13 * scale}px`,
+              padding: `${4 * scale}px ${8 * scale}px`,
+            }}
+          >
             Selected:
           </span>
-          <div className="bg-white px-4 py-1 rounded-tr rounded-br border border-gray-300 w-20 h-7 text-center flex items-center justify-center">
-            <span className="text-black text-sm">{selectedSize || ""}</span>
+          <div
+            className="bg-white rounded-tr rounded-br border border-gray-300 text-center flex items-center justify-center"
+            style={{
+              width: `${80 * scale}px`,
+              height: `${28 * scale}px`,
+              padding: `${4 * scale}px ${16 * scale}px`,
+            }}
+          >
+            <span
+              className="text-black"
+              style={{ fontSize: `${14 * scale}px` }}
+            >
+              {selectedSize || ""}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Main content area */}
-      <div className="bg-[#D4FFFE] p-4 h-full">
-        {/* Recommended Price Header */}
-        <div className="border-4 border-[#D4FFFE] px-3 py-2 mx-6 rounded mb-3">
-          <div className="flex gap-4 justify-center  font-bold text-lg">
-            <span className="text-[#D4FFFE] ">Recommended price</span>
-            {/* <span className="text-black">${recommendedPrice}</span> */}
+      <div
+        className="bg-[#D4DCFF] flex-1 flex flex-col"
+        style={{ padding: `${16 * scale}px` }}
+      >
+        {/* Empty header space for consistency */}
+        <div
+          className="border-[#D4DCFF] rounded opacity-0"
+          style={{
+            borderWidth: `${4 * scale}px`,
+            padding: `${8 * scale}px ${24 * scale}px`,
+            marginBottom: `${12 * scale}px`,
+          }}
+        >
+          <div
+            className="flex gap-4 justify-center font-bold"
+            style={{ fontSize: `${18 * scale}px` }}
+          >
+            <span className="text-[#D4DCFF]">Placeholder</span>
           </div>
         </div>
 
-        {/* Price Grid */}
-        <div className="grid grid-cols-3 gap-2 mb-2 h-4/5  ">
-          {sizes.map((size) => (
+        {/* Size Grid */}
+        <div
+          className="grid grid-cols-2 md:grid-cols-3 pt-2"
+          style={{ gap: `${8 * scale}px` }}
+        >
+          {sizes.map((size,index) => (
             <button
-              key={size}
+              key={size+"-"+index}
               onClick={() => onSizeChange(size)}
-              className={` py-4 rounded-lg  text-lg transition-all  ${
+              className={`rounded-lg transition-all flex items-center justify-center ${
                 selectedSize === size
-                  ? "bg-[#EBF5FF] text-black border-3 border-[#004787]"
-                  : "bg-[#EBF5FF] text-black border-3 border-[#004787]"
+                  ? "bg-black text-white border-black shadow-[inset_0_0_0_4px_white]"
+                  : "bg-[#EBF5FF] text-black border-[#004787]"
               }`}
+              style={{
+                borderWidth: `${selectedSize === size?1:3 * scale}px`,
+                fontSize: `${28 * scale}px`,
+                minHeight: `${28 * scale}px`,
+                padding: `${20 * scale}px ${16 * scale}px`,
+              }}
             >
               {size}
             </button>
           ))}
         </div>
       </div>
-      {/* Custom Price Section */}
-      <div className="bg-[#BEBEBE] rounded-b-lg flex items-start flex-col p-3">
-        <h3 className="text-black text-lg mb-2">Other Custom Size</h3>
+
+      {/* Custom Size Section */}
+      <div className="bg-[#D4DCFF] flex justify-center pb-2">
         <div
           ref={customInputRef}
-          className="flex items-center w-full cursor-pointer"
           onClick={handleCustomInputClick}
+          className={`rounded-lg transition-all cursor-pointer flex items-center justify-center text-black border-[#004787] bg-[#EBF5FF]`}
+          style={{
+            borderWidth: `${3 * scale}px`,
+            fontSize: `${28 * scale}px`,
+            minHeight: `${48 * scale}px`,
+            padding: `${8 * scale}px ${24 * scale}px`,
+          }}
         >
-          <div className="bg-white px-4 py-1 rounded border-3 border-[#004787] h-8 text-center flex items-center justify-center flex-1 hover:bg-gray-50 transition-colors">
-            Other Custom Size
-          </div>
+          Other
         </div>
       </div>
 
@@ -82,6 +139,8 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
         onConfirm={onSizeChange}
         anchorEl={customInputRef.current}
         placeholder={"Other Custom Size"}
+        heading={"Custome Size"}
+        bgColor={'bg-[#D4DCFF]'}
       />
     </div>
   );

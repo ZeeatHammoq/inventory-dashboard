@@ -6,6 +6,8 @@ interface NumericKeypadProps {
   onConfirm: (value: string) => void;
   anchorEl: HTMLElement | null;
   placeholder?: string;
+  bgColor?:string;
+  heading:string;
 }
 
 const NumericKeypad: React.FC<NumericKeypadProps> = ({
@@ -14,6 +16,8 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({
   onConfirm,
   anchorEl,
   placeholder = "Enter value",
+  bgColor="bg-blue-50",
+  heading
 }) => {
   const [inputValue, setInputValue] = useState("");
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -63,23 +67,23 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({
   if (!isOpen || !anchorEl) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
       <div
         ref={popoverRef}
-        className="bg-white rounded-lg shadow-xl border-2 border-gray-300 w-80"
+        className="bg-white rounded-lg shadow-xl border-2 border-gray-300 w-1/3"
       >
         {/* Header */}
         <div className="bg-gray-600 text-white p-3 rounded-t-lg flex items-center justify-between">
-          <h3 className="text-lg font-medium">Custom Size</h3>
+          <h3 className="text-2xl font-bold">{heading}</h3>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 text-xl font-bold"
+            className="text-white hover:text-gray-200 text-5xl font-bold pr-3"
           >
             ×
           </button>
         </div>
 
-        <div className="p-4 bg-blue-50">
+        <div className={`p-4 ${bgColor}`}>
           {/* Input Display */}
           <div className="mb-4">
             <input
@@ -87,7 +91,7 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({
               value={inputValue}
               placeholder={placeholder}
               readOnly
-              className="w-full p-3 border-2 border-gray-300 rounded text-lg text-center bg-white"
+              className="w-full p-3 border-2 border-gray-300 rounded text-2xl text-center bg-white"
             />
           </div>
 
@@ -97,7 +101,7 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({
               <button
                 key={num}
                 onClick={() => handleKeyPress(num)}
-                className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-4 text-xl font-semibold transition-colors"
+                className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-9 text-5xl transition-colors"
               >
                 {num}
               </button>
@@ -106,19 +110,19 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({
             {/* Bottom row */}
             <button
               onClick={() => handleKeyPress(".")}
-              className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-4 text-xl font-semibold transition-colors"
+              className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-9 text-5xl transition-colors"
             >
               .
             </button>
             <button
               onClick={() => handleKeyPress("0")}
-              className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-4 text-xl font-semibold transition-colors"
+              className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-9 text-5xl transition-colors"
             >
               0
             </button>
             <button
               onClick={() => handleKeyPress("backspace")}
-              className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-4 text-xl font-semibold transition-colors"
+              className="bg-gray-200 hover:bg-gray-300 border border-gray-400 rounded p-9 text-5xl transition-colors"
             >
               ⌫
             </button>
@@ -127,7 +131,7 @@ const NumericKeypad: React.FC<NumericKeypadProps> = ({
           {/* Action Button */}
           <button
             onClick={handleDone}
-            className="w-full bg-gray-400 hover:bg-gray-500 text-white p-3 rounded font-medium transition-colors"
+            className="w-full bg-blue-400 hover:bg-blue-500 text-white p-8 rounded font-medium transition-colors text-4xl"
             disabled={!inputValue.trim()}
           >
             Done

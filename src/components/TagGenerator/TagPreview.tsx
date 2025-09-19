@@ -1,4 +1,5 @@
 import React from "react";
+import QRCode from "react-qr-code";
 
 interface TagPreviewProps {
   department: string;
@@ -6,8 +7,9 @@ interface TagPreviewProps {
   quantity?: string;
   size?: string;
   price: string;
-  qualityLevel: "Good" | "Better" | "Best";
+  qualityLevel: "Good" | "Better" | "Best" | "";
   onPrint: () => void;
+  sku:string;
 }
 
 export const TagPreview: React.FC<TagPreviewProps> = ({
@@ -18,60 +20,154 @@ export const TagPreview: React.FC<TagPreviewProps> = ({
   price,
   qualityLevel,
   onPrint,
+  sku
 }) => {
+  const getScale = () => {
+    const baseWidth = 1920;
+    const currentWidth = window.innerWidth;
+    return Math.max(0.6, Math.min(2.0, currentWidth / baseWidth));
+  };
+
+  const scale = getScale();
+  
   return (
-    <div className="space-y-4 h-full flex flex-col justify-between">
+    <div
+      className="h-full flex flex-col justify-between"
+      style={{ gap: `${16 * scale}px` }}
+    >
       {/* Tag Preview Header */}
-      <div className="bg-black px-4 py-3  text-center">
-        <h3 className="text-white font-bold text-lg">Tag Preview</h3>
+      <div
+        className="bg-black text-center"
+        style={{
+          padding: `${12 * scale}px ${16 * scale}px`,
+        }}
+      >
+        <h3
+          className="text-white font-bold"
+          style={{ fontSize: `${18 * scale}px` }}
+        >
+          Tag Preview
+        </h3>
       </div>
 
-      {/* Tag Card */}
-      <div className="bg-white  overflow-hidden shadow-lg max-w-xs flex justify-start flex-col items-center mx-auto h-4/6">
-        {/* Green Header */}
-        <div className="bg-[#70C96D] px-4 py-2 text-center h-1/5 w-full align-text-bottom flex flex-col-reverse">
-          <div className="text-white font-bold text-2xl ">GOODWILL</div>
-        </div>
-
-        {/* Tag Content */}
-        <div className="p-4 text-center">
-          {/* Item Name */}
-          <div className="text-black font-bold text-3xl mb-1">
-            {department} -{" "}
-            {itemDescription.replace(/^(Men's |Women's |Unisex )/, "")}
+      {/* Tag Card Container */}
+      <div
+        className="flex items-center justify-center"
+        style={{ padding: `${16 * scale}px` }}
+      >
+        <div
+          className="bg-white overflow-hidden shadow-lg flex flex-col"
+          style={{
+            width: `${300 * scale}px`,
+            height: `${500 * scale}px`,
+            maxWidth: "90%",
+          }}
+        >
+          {/* Green Header */}
+          <div
+            className="bg-[#70C96D] text-center flex items-end justify-center w-full"
+            style={{
+              padding: `${8 * scale}px ${16 * scale}px`,
+              height: `${60 * scale}px`,
+            }}
+          >
+            <div
+              className="text-white font-bold"
+              style={{ fontSize: `${24 * scale}px` }}
+            >
+              GOODWILL
+            </div>
           </div>
 
-          {/* Quality Level */}
-          <div className="text-black text-2xl mb-2">{qualityLevel}</div>
+          {/* Tag Content */}
+          <div
+            className="text-center flex-1 relative"
+            style={{ padding: `${16 * scale}px` }}
+          >
+            {/* Item Name */}
+            <div
+              className="text-black font-bold leading-tight"
+              style={{
+                fontSize: `${28 * scale}px`,
+                marginBottom: `${4 * scale}px`,
+              }}
+            >
+              {department} -{" "}
+              {itemDescription.replace(/^(Men's |Women's |Unisex )/, "")}
+            </div>
 
-          {quantity ? (
-            <div className="text-black text-xl mb-2">Qty: {quantity}</div>
-          ) : (
-            ""
-          )}
+            {/* Quality Level */}
+            <div
+              className="text-black"
+              style={{
+                fontSize: `${28 * scale}px`,
+                marginBottom: `${8 * scale}px`,
+              }}
+            >
+              {qualityLevel}
+            </div>
 
-          {size ? (
-            <div className="text-black text-xl mb-2">Size: {size}</div>
-          ) : (
-            ""
-          )}
-
-          {/* Price */}
-          <div className="text-black  text-4xl mb-4">
-            ${price?.replace("$", "")}
-          </div>
-
-          {/* QR Code Placeholder */}
-          <div className="w-16 h-16 bg-black mx-auto flex items-center justify-center">
-            <div className="w-12 h-12 bg-white">
-              {/* QR Code pattern simulation */}
+            {/* Quantity */}
+            {quantity && (
               <div
-                className="w-full h-full"
+                className="text-black"
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='4' height='4'/%3E%3Crect x='8' y='0' width='4' height='4'/%3E%3Crect x='16' y='0' width='4' height='4'/%3E%3Crect x='24' y='0' width='4' height='4'/%3E%3Crect x='32' y='0' width='4' height='4'/%3E%3Crect x='40' y='0' width='4' height='4'/%3E%3Crect x='0' y='8' width='4' height='4'/%3E%3Crect x='16' y='8' width='4' height='4'/%3E%3Crect x='32' y='8' width='4' height='4'/%3E%3Crect x='0' y='16' width='4' height='4'/%3E%3Crect x='8' y='16' width='4' height='4'/%3E%3Crect x='24' y='16' width='4' height='4'/%3E%3Crect x='40' y='16' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E")`,
-                  backgroundSize: "cover",
+                  fontSize: `${24 * scale}px`,
+                  marginBottom: `${4 * scale}px`,
                 }}
-              />
+              >
+                <div className="flex justify-center">
+                  <p className="w-24 text-left">Qty:</p>
+                  <p className="w-8 text-right">{quantity}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Size */}
+            {size && (
+              <div
+                className="text-black"
+                style={{
+                  fontSize: `${24 * scale}px`,
+                  marginBottom: `${4 * scale}px`,
+                }}
+              >
+                <div className="flex justify-center">
+                  <p className="w-24 text-left">Size:</p>
+                  <p className="w-8 text-right">{size}</p>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="w-full pb-4">
+            <div className="flex justify-center flex-col items-center">
+              {/* Price */}
+              <div
+                className="text-black"
+                style={{
+                  fontSize: `${52 * scale}px`,
+                  marginBottom: `${8 * scale}px`,
+                }}
+              >
+                ${price?.replace("$", "")}
+              </div>
+
+              {/* QR Code Placeholder */}
+              <div
+                className=" mx-auto flex flex-col gap-2 items-center justify-center"
+              >
+                <p style={{ fontSize: `${16 * scale}px` }}>{sku}</p>
+                <QRCode
+                  size={256}
+                  className="bg-white"
+                  style={{
+                    width: `${100 * scale}px`,
+                    height: `${100 * scale}px`,
+                  }}
+                  value={sku}
+                  viewBox={`0 0 256 256`}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -80,16 +176,28 @@ export const TagPreview: React.FC<TagPreviewProps> = ({
       {/* Print Button */}
       <button
         onClick={onPrint}
-        className="w-full bg-[#0C76D0] cursor-pointer  shadow-lg p-6 flex flex-col items-center justify-center transition-all duration-300 touch-manipulation mt-auto"
+        className="bg-[#0C76D0] hover:bg-[#0a5ea8] cursor-pointer shadow-lg flex items-center justify-center transition-all duration-300 active:scale-95 touch-manipulation mt-auto"
+        style={{
+          padding: `${24 * scale}px`,
+          gap: `${12 * scale}px`,
+        }}
       >
-        <div className="mb-3">
+        <div>
           <img
             src={`/images/print-icon.png`}
-            className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12"
+            style={{
+              width: `${64 * scale}px`,
+              height: `${64 * scale}px`,
+            }}
             alt={"Print"}
           />
         </div>
-        <span className="text-blue-900 font-bold text-lg">Print Tag</span>
+        <span
+          className="text-white font-bold"
+          style={{ fontSize: `${32 * scale}px` }}
+        >
+          Print Tag
+        </span>
       </button>
     </div>
   );

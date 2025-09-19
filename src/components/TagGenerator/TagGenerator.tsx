@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useInventoryStore } from "../../stores/inventoryStore";
 import { useAuthStore } from "../../stores/authStore";
@@ -9,19 +9,30 @@ import { PriceSelector } from "./PriceSelector";
 import { SizeSelector } from "./SizeSelector";
 import { TagPreview } from "./TagPreview";
 import { Breadcrumb } from "../Breadcrumb";
+import QRCode from "react-qr-code";
 
 export const TagGenerator: React.FC = () => {
   const navigate = useNavigate();
   const { selectedItem, selectedDepartment, reset } = useInventoryStore();
   const { logout } = useAuthStore();
 
-  const [showAttributes, setShowAttributes] = useState(true);
+  const [showAttributes, setShowAttributes] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState<string>("");
   const [selectedPrice, setSelectedPrice] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
-  const [qualityLevel, setQualityLevel] = useState<"Good" | "Better" | "Best">(
-    "Best"
-  );
+  const [qualityLevel, setQualityLevel] = useState<
+    "Good" | "Better" | "Best" | ""
+  >("");
+  const sku = "ahskfjhgsdjkfhjk";
+
+  // Calculate responsive scale factor
+  const getScale = () => {
+    const baseWidth = 1920;
+    const currentWidth = window.innerWidth;
+    return Math.max(0.6, Math.min(2.0, currentWidth / baseWidth));
+  };
+
+  const scale = getScale();
 
   if (!selectedDepartment || !selectedItem) {
     reset();
@@ -44,7 +55,6 @@ export const TagGenerator: React.FC = () => {
   };
 
   const handlePrintTag = () => {
-    // Print functionality remains the same
     const printWindow = window.open("", "_blank");
     const tagContent = document.getElementById("printable-tag");
 
@@ -60,48 +70,109 @@ export const TagGenerator: React.FC = () => {
               padding: 20px;
               font-family: Arial, sans-serif;
             }
-            .tag-print {
-              max-width: 400px;
-              margin: 0 auto;
-              border: 2px solid #333;
-              border-radius: 8px;
+            .main-container {
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .tag-card {
+              background-color: white;
               overflow: hidden;
-              background: white;
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+              display: flex;
+              flex-direction: column;
+              max-width: 90%;
             }
-            .tag-header {
-              background-color: #22c55e;
-              padding: 8px 16px;
-              border-bottom: 1px solid #d1d5db;
-            }
-            .tag-title {
-              font-size: 14px;
-              font-weight: bold;
-              color: white;
-              margin: 0;
+
+        /* Header Styles */
+            .header-section {
+              background-color: #70C96D;
               text-align: center;
+              display: flex;
+              align-items: flex-end;
+              justify-content: center;
+              width: auto;
             }
-            .tag-details {
-              padding: 16px;
-              text-align: center;
-            }
-            .item-name {
-              font-size: 16px;
-              font-weight: bold;
-              margin-bottom: 4px;
-            }
-            .item-quality {
-              font-size: 14px;
-              margin-bottom: 8px;
-            }
-            .item-details {
-              font-size: 12px;
-              margin-bottom: 16px;
-            }
-            .price {
-              font-size: 24px;
-              font-weight: bold;
-              margin-bottom: 16px;
-            }
+
+        .header-text {
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Content Area Styles */
+        .content-area {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Item Information Styles */
+        .item-name {
+            color: black;
+            font-weight: bold;
+            line-height: 1.25;
+        }
+
+        .quality-level {
+            color: black;
+        }
+
+        .quantity-section {
+            color: black;
+        }
+
+        .size-section {
+            color: black;
+        }
+
+        /* Flex Layout for Quantity and Size */
+        .info-flex {
+            display: flex;
+            justify-content: center;
+        }
+
+        .info-label {
+            width: 6rem; /* w-24 = 96px = 6rem */
+            text-align: left;
+        }
+
+        .info-value {
+            width: 2rem; /* w-8 = 32px = 2rem */
+            text-align: right;
+        }
+
+        /* Bottom Section Styles */
+        .bottom-section {
+            width: 100%;
+            padding-bottom: 1rem;
+        }
+
+        .bottom-flex {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .price-text {
+            color: black;
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-background {
+            background-color: white;
+        }
             @media print {
               body { margin: 0; padding: 10px; }
               .tag-print { max-width: none; }
@@ -124,40 +195,97 @@ export const TagGenerator: React.FC = () => {
     }
   };
 
+  useEffect(()=>{
+    const showAttributeLocalValue=localStorage.getItem('showAttributes')||"false";
+    setShowAttributes(showAttributeLocalValue==="true");
+  },[]);
+
   return (
-    <div className="h-screen  bg-gradient-to-br from-slate-600 to-slate-800 p-3 sm:p-6 lg:p-8 flex flex-col">
+    <div
+      className="h-screen bg-gradient-to-br from-slate-600 to-slate-800 flex flex-col"
+      style={{
+        padding: `${6 * scale}px`,
+        gap: `${4 * scale}px`,
+      }}
+    >
       {/* Top Navigation */}
-      <div className="bg-white rounded-lg shadow-lg mb-2 sm:mb-3 lg:mb-4 overflow-hidden py-2 px-2">
+      <div
+        className="bg-white rounded-lg shadow-lg overflow-hidden"
+        style={{
+          padding: `${8 * scale}px`,
+          marginBottom: `${4 * scale}px`,
+        }}
+      >
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center">
           <button
             onClick={handleDepartmentBack}
-            className="bg-[#939393] hover:bg-gray-400 text-gray-700 px-4 py-1 lg:px-8 lg:py-2 font-medium transition-colors flex items-center gap-2 text-sm lg:text-lg"
+            className="bg-[#939393] hover:bg-gray-400 text-gray-700 font-medium transition-colors flex items-center rounded-l"
+            style={{
+              padding: `${8 * scale}px ${32 * scale}px`,
+              fontSize: `${18 * scale}px`,
+              gap: `${8 * scale}px`,
+            }}
           >
-            <ArrowLeft className="h-4 w-4 lg:h-5 lg:w-5" />
+            <ArrowLeft
+              style={{
+                width: `${20 * scale}px`,
+                height: `${20 * scale}px`,
+              }}
+            />
             Department
           </button>
           <button
             onClick={handleItemBack}
-            className="bg-[#939393] hover:bg-gray-400 text-gray-700 px-4 py-1 lg:px-8 lg:py-2 font-medium transition-colors text-sm lg:text-lg"
+            className="bg-[#939393] hover:bg-gray-400 text-gray-700 font-medium transition-colors"
+            style={{
+              padding: `${8 * scale}px ${32 * scale}px`,
+              fontSize: `${18 * scale}px`,
+            }}
           >
             Item Description
           </button>
-          <div className="bg-[#0C76D0] text-white px-4 py-1 lg:px-8 lg:py-2 font-medium text-sm lg:text-lg">
+          <div
+            className="bg-[#0C76D0] text-white font-medium"
+            style={{
+              padding: `${8 * scale}px ${32 * scale}px`,
+              fontSize: `${18 * scale}px`,
+            }}
+          >
             Tag
           </div>
-          <div className="bg-[#0C76D0] flex items-center justify-center px-4 py-1 lg:px-8 lg:py-2 font-medium text-sm lg:text-lg ml-1">
+          <div
+            className="bg-[#0C76D0] flex items-center justify-center font-medium rounded-r"
+            style={{
+              padding: `${8 * scale}px ${32 * scale}px`,
+              fontSize: `${18 * scale}px`,
+              marginLeft: `${4 * scale}px`,
+            }}
+          >
             <AttributeToggle
               showAttributes={showAttributes}
-              onToggle={setShowAttributes}
+              onToggle={()=>{
+                setShowAttributes(!showAttributes);
+                localStorage.setItem('showAttributes',`${!showAttributes}`)
+              }}
             />
           </div>
           <div className="flex-1"></div>
           <button
             onClick={handleLogout}
-            className="bg-red-700 hover:bg-red-800 rounded text-white px-4 py-1 lg:px-8 lg:py-2 font-medium transition-colors flex items-center gap-2 text-sm lg:text-lg"
+            className="bg-red-700 hover:bg-red-800 rounded text-white font-medium transition-colors flex items-center"
+            style={{
+              padding: `${8 * scale}px ${32 * scale}px`,
+              fontSize: `${18 * scale}px`,
+              gap: `${8 * scale}px`,
+            }}
           >
-            <LogOut className="h-4 w-4 lg:h-5 lg:w-5" />
+            <LogOut
+              style={{
+                width: `${20 * scale}px`,
+                height: `${20 * scale}px`,
+              }}
+            />
             Logout
           </button>
         </div>
@@ -165,7 +293,13 @@ export const TagGenerator: React.FC = () => {
         {/* Mobile Navigation */}
         <div className="md:hidden">
           {/* Current Step Indicator */}
-          <div className="bg-[#0C76D0] text-white px-4 py-3 text-center font-medium text-sm">
+          <div
+            className="bg-[#0C76D0] text-white text-center font-medium"
+            style={{
+              padding: `${12 * scale}px ${16 * scale}px`,
+              fontSize: `${14 * scale}px`,
+            }}
+          >
             Step 3: Print Tag
           </div>
 
@@ -173,22 +307,43 @@ export const TagGenerator: React.FC = () => {
           <div className="flex bg-gray-100">
             <button
               onClick={handleDepartmentBack}
-              className="flex-1 bg-[#939393] hover:bg-gray-400 text-gray-600 hover:text-gray-700 text-center py-2 text-xs font-medium transition-colors"
+              className="flex-1 bg-[#939393] hover:bg-gray-400 text-gray-600 hover:text-gray-700 text-center font-medium transition-colors"
+              style={{
+                padding: `${8 * scale}px`,
+                fontSize: `${12 * scale}px`,
+              }}
             >
               Department
             </button>
             <button
               onClick={handleItemBack}
-              className="flex-1 bg-[#939393] hover:bg-gray-400 text-gray-600 hover:text-gray-700 text-center py-2 text-xs font-medium transition-colors"
+              className="flex-1 bg-[#939393] hover:bg-gray-400 text-gray-600 hover:text-gray-700 text-center font-medium transition-colors"
+              style={{
+                padding: `${8 * scale}px`,
+                fontSize: `${12 * scale}px`,
+              }}
             >
               Item Description
             </button>
-            <div className="flex-1 bg-[#0C76D0] text-white text-center py-2 text-xs font-medium">
+            <div
+              className="flex-1 bg-[#0C76D0] text-white text-center font-medium"
+              style={{
+                padding: `${8 * scale}px`,
+                fontSize: `${12 * scale}px`,
+              }}
+            >
               Tag
             </div>
           </div>
 
-          <div className="bg-[#0C76D0] flex items-center justify-center px-4 py-1 font-medium text-sm my-2 mx-auto w-fitz ">
+          <div
+            className="bg-[#0C76D0] flex items-center justify-center font-medium mx-auto w-fit"
+            style={{
+              padding: `${4 * scale}px ${16 * scale}px`,
+              fontSize: `${14 * scale}px`,
+              margin: `${8 * scale}px auto`,
+            }}
+          >
             <AttributeToggle
               showAttributes={showAttributes}
               onToggle={setShowAttributes}
@@ -196,26 +351,51 @@ export const TagGenerator: React.FC = () => {
           </div>
 
           {/* Mobile Controls */}
-          <div className="bg-gray-50 px-4 py-3 border-t flex justify-between items-center">
+          <div
+            className="bg-gray-50 border-t flex justify-between items-center"
+            style={{
+              padding: `${12 * scale}px ${16 * scale}px`,
+            }}
+          >
             <button
               onClick={handleItemBack}
-              className="bg-[#939393] hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 text-sm"
+              className="bg-[#939393] hover:bg-gray-400 text-gray-700 rounded-lg font-medium transition-colors flex items-center"
+              style={{
+                padding: `${8 * scale}px ${16 * scale}px`,
+                fontSize: `${14 * scale}px`,
+                gap: `${8 * scale}px`,
+              }}
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft
+                style={{
+                  width: `${16 * scale}px`,
+                  height: `${16 * scale}px`,
+                }}
+              />
               Back
             </button>
             <button
               onClick={handleLogout}
-              className="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 text-sm"
+              className="bg-red-700 hover:bg-red-800 text-white rounded-lg font-medium transition-colors flex items-center"
+              style={{
+                padding: `${8 * scale}px ${16 * scale}px`,
+                fontSize: `${14 * scale}px`,
+                gap: `${8 * scale}px`,
+              }}
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut
+                style={{
+                  width: `${16 * scale}px`,
+                  height: `${16 * scale}px`,
+                }}
+              />
               Logout
             </button>
           </div>
         </div>
       </div>
 
-      <div className="mb-1">
+      <div style={{ marginBottom: `${4 * scale}px` }}>
         <Breadcrumb
           departmentName={selectedDepartment}
           itemName={selectedItem.itemDescription}
@@ -223,19 +403,30 @@ export const TagGenerator: React.FC = () => {
       </div>
 
       {/* Main Content */}
-
-      <div className="flex flex-row gap-1 grow">
+      <div
+        className="flex flex-col md:flex-row grow"
+        style={{ gap: `${4 * scale}px` }}
+      >
         {showAttributes ? (
-          <div className="grow-[3]  flex gap-1 ">
-            <div className="grow h-full">
+          <div
+            className="flex flex-col md:flex-row md:flex-[3]"
+            style={{ gap: `${4 * scale}px` }}
+          >
+            <div className="md:flex-1 h-64 md:h-auto">
               <QuantitySelector
                 selectedQuantity={selectedQuantity}
                 setSelectedQuantity={setSelectedQuantity}
               />
             </div>
-            <div className="grow-[3] bg-blue h-full ">
-              <div className="h-5/6  flex gap-1">
-                <div className="grow-[2]  h-full">
+            <div
+              className="flex flex-col md:flex-[3]"
+              style={{ gap: `${4 * scale}px` }}
+            >
+              <div
+                className="flex flex-1 h-64 md:h-5/6"
+                style={{ gap: `${4 * scale}px` }}
+              >
+                <div className="flex-[2] h-full">
                   <PriceSelector
                     prices={selectedItem.price || []}
                     recommendedPrice={selectedItem.currentPrice}
@@ -243,7 +434,7 @@ export const TagGenerator: React.FC = () => {
                     onPriceChange={setSelectedPrice}
                   />
                 </div>
-                <div className="grow h-full">
+                <div className="flex-1 h-full">
                   <SizeSelector
                     sizes={selectedItem.size || []}
                     selectedSize={selectedSize}
@@ -251,88 +442,205 @@ export const TagGenerator: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex gap-2 h-1/6 p-2">
+              <div
+                className="flex md:h-1/6 h-16"
+                style={{
+                  gap: `${8 * scale}px`,
+                  padding: `${8 * scale}px`,
+                }}
+              >
                 <button
                   onClick={() => setQualityLevel("Good")}
-                  className={`flex-1 py-3 rounded font-bold ${
+                  className={`flex-1 rounded transition-all ${
                     qualityLevel === "Good"
-                      ? "bg-[#FFA947] text-black opacity-60"
-                      : "bg-[#FFA947] text-black"
+                      ? "bg-[#FFA947] text-black shadow-[inset_0_0_0_4px_white]"
+                      : qualityLevel === ""
+                      ? "bg-[#FFA947] text-black"
+                      : "bg-[#FFA947] text-black opacity-30"
                   }`}
+                  style={{
+                    fontSize: `${32 * scale}px`,
+                    padding: `${12 * scale}px`,
+                  }}
                 >
                   Good
                 </button>
                 <button
                   onClick={() => setQualityLevel("Better")}
-                  className={`flex-1 py-3 rounded font-bold ${
+                  className={`flex-1 rounded font-medium transition-all ${
                     qualityLevel === "Better"
-                      ? "bg-[#FBFF00] text-black opacity-60"
-                      : "bg-[#FBFF00] text-black"
+                      ? "bg-[#FBFF00] text-black shadow-[inset_0_0_0_4px_white]"
+                      : qualityLevel === ""
+                      ? "bg-[#FBFF00] text-black"
+                      : "bg-[#FBFF00] text-black opacity-30"
                   }`}
+                  style={{
+                    fontSize: `${32 * scale}px`,
+                    padding: `${12 * scale}px`,
+                  }}
                 >
                   Better
                 </button>
                 <button
                   onClick={() => setQualityLevel("Best")}
-                  className={`flex-1 py-3 rounded font-bold ${
+                  className={`flex-1 rounded font-bold transition-all ${
                     qualityLevel === "Best"
-                      ? "bg-[#00FF22] text-black opacity-60"
-                      : "bg-[#00FF22] text-black"
+                      ? "bg-[#00FF22] text-black shadow-[inset_0_0_0_4px_white]"
+                      : qualityLevel === ""
+                      ? "bg-[#00FF22] text-black"
+                      : "bg-[#00FF22] text-black opacity-30"
                   }`}
+                  style={{
+                    fontSize: `${32 * scale}px`,
+                    padding: `${12 * scale}px`,
+                  }}
                 >
                   Best
                 </button>
               </div>
             </div>
           </div>
-        ) : (
-          ""
-        )}
-        <div className="grow bg-[#595555] -mt-1 ">
+        ) : null}
+        <div
+          className={`bg-[#595555] ${
+            showAttributes ? "md:flex-1 h-64 md:h-auto" : "flex-1"
+          }`}
+          style={{ marginTop: `${-4 * scale}px` }}
+        >
           <TagPreview
             department={selectedDepartment}
             itemDescription={selectedItem.itemDescription}
-            quantity={selectedQuantity}
-            size={selectedSize}
-            price={selectedPrice || selectedItem.currentPrice}
-            qualityLevel={qualityLevel}
+            quantity={showAttributes?selectedQuantity:""}
+            size={showAttributes?selectedSize:""}
+            price={showAttributes?selectedPrice || selectedItem.currentPrice:selectedItem.currentPrice}
+            qualityLevel={showAttributes?qualityLevel:""}
             onPrint={handlePrintTag}
+            sku={sku}
           />
         </div>
       </div>
 
       {/* Hidden printable tag content */}
       <div id="printable-tag" style={{ display: "none" }}>
-        <div className="tag-print">
-          <div className="tag-header">
-            <h2 className="tag-title">GOODWILL</h2>
-          </div>
-          <div className="tag-details">
-            <div className="item-name">
-              {selectedDepartment} -{" "}
-              {selectedItem.itemDescription.replace(
-                /^(Men's |Women's |Unisex )/,
-                ""
-              )}
-            </div>
-            <div className="item-quality">{qualityLevel}</div>
-            {selectedQuantity && selectedSize && (
-              <div className="item-details">
-                Qty: {selectedQuantity} Size: {selectedSize}
-              </div>
-            )}
-            <div className="price">
-              ${selectedPrice || selectedItem.currentPrice}
-            </div>
+        <div className="main-container" style={{ padding: `${16 * scale}px` }}>
+          <div
+            className="tag-card"
+            style={{
+              width: `${300 * scale}px`,
+              height: `${500 * scale}px`,
+              maxWidth: "90%",
+            }}
+          >
+            {/* <!-- Green Header --> */}
             <div
+              className="header-section"
               style={{
-                width: "60px",
-                height: "60px",
-                margin: "0 auto",
-                backgroundColor: "#000",
+                padding: `${8 * scale}px ${16 * scale}px`,
+                height: `${60 * scale}px`,
               }}
             >
-              {/* QR Code placeholder */}
+              <div
+                className="header-text"
+                style={{ fontSize: `${24 * scale}px` }}
+              >
+                GOODWILL
+              </div>
+            </div>
+
+            {/* <!-- Tag Content --> */}
+            <div
+              className="content-area"
+              style={{ padding: `${16 * scale}px` }}
+            >
+              {/* <!-- Item Name --> */}
+              <div
+                className="item-name"
+                style={{
+                  fontSize: `${28 * scale}px`,
+                  marginBottom: `${4 * scale}px`,
+                }}
+              >
+                {selectedDepartment} -{" "}
+                {selectedItem.itemDescription.replace(
+                  /^(Men's |Women's |Unisex )/,
+                  ""
+                )}
+              </div>
+
+              {/* <!-- Quality Level --> */}
+              <div
+                className="quality-level"
+                style={{
+                  fontSize: `${28 * scale}px`,
+                  marginBottom: `${8 * scale}px`,
+                }}
+              >
+                {showAttributes?qualityLevel:""}
+              </div>
+
+              {/* <!-- Quantity --> */}
+              {showAttributes&&selectedQuantity && (
+                <div
+                  className="quantity-section"
+                  style={{
+                    fontSize: `${24 * scale}px`,
+                    marginBottom: `${4 * scale}px`,
+                  }}
+                >
+                  <div className="info-flex">
+                    <span className="info-label">Qty:</span>
+                    <span className="info-value">{selectedQuantity}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* <!-- Size --> */}
+              {showAttributes&&selectedSize && (
+                <div
+                  className="size-section"
+                  style={{
+                    fontSize: `${24 * scale}px`,
+                    marginBottom: `${4 * scale}px`,
+                  }}
+                >
+                  <div className="info-flex">
+                    <span className="info-label">Size:</span>
+                    <span className="info-value">{selectedSize}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="bottom-section">
+              <div className="bottom-flex">
+                {/* <!-- Price --> */}
+                <div
+                  className="price-text"
+                  style={{
+                    fontSize: `${52 * scale}px`,
+                    marginBottom: `${8 * scale}px`,
+                  }}
+                >
+                  $
+                  {showAttributes?selectedPrice?.replace("$", "") ||
+                    selectedItem.currentPrice?.replace("$", ""):selectedItem.currentPrice?.replace("$", "")}
+                </div>
+
+                {/* <!-- QR Code Section --> */}
+                <div className="qr-section">
+                  <p style={{ fontSize: `${16 * scale}px` }}>{sku}</p>
+                  <QRCode
+                    size={256}
+                    className="qr-background"
+                    style={{
+                      width: `${100 * scale}px`,
+                      height: `${100 * scale}px`,
+                    }}
+                    value={sku}
+                    viewBox={`0 0 256 256`}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

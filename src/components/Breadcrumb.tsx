@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-// import { useInventoryStore } from "../stores/inventoryStore";
 
 interface BreadcrumbProps {
   departmentName?: string;
@@ -12,6 +11,14 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   itemName,
 }) => {
   const navigate = useNavigate();
+  
+  const getScale = () => {
+    const baseWidth = 1920;
+    const currentWidth = window.innerWidth;
+    return Math.max(0.6, Math.min(2.0, currentWidth / baseWidth));
+  };
+
+  const scale = getScale();
 
   const handleItemBack = () => {
     navigate("/items");
@@ -41,53 +48,102 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   }
 
   return (
-    <div className="bg-[#202020] text-white px-6 py-2   flex items-center border-2 border-[#004787]">
+    <div 
+      className="bg-[#202020] text-white flex items-center border-2 border-[#004787] rounded"
+      style={{ 
+        padding: `${8 * scale}px ${24 * scale}px`
+      }}
+    >
       {departmentName && (
         <>
           <button
             onClick={handleItemBack}
-            className="flex items-center space-x-4 hover:bg-slate-600 px-4 py-1 rounded-lg transition-colors"
+            className="flex items-center hover:bg-slate-600 rounded-lg transition-colors"
+            style={{ 
+              gap: `${16 * scale}px`,
+              padding: `${4 * scale}px ${16 * scale}px`
+            }}
           >
             <div className="flex-shrink-0">
               <img
                 src={`/images/departments/${departmentName
                   .toLowerCase()
                   .replace(/[^a-z]/g, "")}.png`}
-                className="h-8 w-8"
+                style={{ 
+                  width: `${32 * scale}px`,
+                  height: `${32 * scale}px`
+                }}
                 alt={departmentName}
               />
             </div>
-            <span className="font-medium text-xl">{departmentName}</span>
+            <span 
+              className="font-medium"
+              style={{ fontSize: `${20 * scale}px` }}
+            >
+              {departmentName}
+            </span>
           </button>
 
           {itemName && (
             <>
-              <span className="mx-6 text-slate-300 text-2xl">›</span>
-              <button
-                // onClick={handleItemBack}
-                className="flex items-center space-x-4  px-4 py-1 rounded-lg transition-colors"
+              <span 
+                className="text-slate-300"
+                style={{ 
+                  margin: `0 ${24 * scale}px`,
+                  fontSize: `${24 * scale}px`
+                }}
+              >
+                ›
+              </span>
+              <button 
+                className="flex items-center rounded-lg transition-colors"
+                style={{ 
+                  gap: `${16 * scale}px`,
+                  padding: `${4 * scale}px ${16 * scale}px`
+                }}
               >
                 <div className="flex-shrink-0">
-                  <img src={itemImagePath} className="h-8 w-8" alt={""} />
+                  <img 
+                    src={itemImagePath} 
+                    style={{ 
+                      width: `${32 * scale}px`,
+                      height: `${32 * scale}px`
+                    }}
+                    alt={""} 
+                  />
                 </div>
-                <span className="font-medium text-xl">
+                <span 
+                  className="font-medium"
+                  style={{ fontSize: `${20 * scale}px` }}
+                >
                   {itemName.replace(/^(Men's |Women's |Unisex )/, "")}
                 </span>
               </button>
             </>
           )}
 
-          {itemName ? (
-            <div className="ml-auto ">
-              <div className="flex items-center gap-3 text-white text-sm font-medium">
-                <span>Color of the week</span>
-                <div className="bg-green-500 px-4 py-1 rounded text-white font-bold">
+          {itemName && (
+            <div className="ml-auto">
+              <div 
+                className="flex items-center text-white font-medium"
+                style={{ 
+                  gap: `${12 * scale}px`,
+                  fontSize: `${14 * scale}px`
+                }}
+              >
+                <span className="hidden sm:inline">Color of the week</span>
+                <span className="sm:hidden">Color</span>
+                <div 
+                  className="bg-green-500 rounded text-white font-bold"
+                  style={{ 
+                    padding: `${4 * scale}px ${16 * scale}px`,
+                    fontSize: `${14 * scale}px`
+                  }}
+                >
                   Green
                 </div>
               </div>
             </div>
-          ) : (
-            ""
           )}
         </>
       )}
