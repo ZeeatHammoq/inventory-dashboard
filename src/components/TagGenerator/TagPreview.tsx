@@ -44,7 +44,7 @@ export const TagPreview: React.FC<TagPreviewProps> = ({
       >
         <h3
           className="text-white font-bold"
-          style={{ fontSize: `${18 * scale}px` }}
+          style={{ fontSize: `${24 * scale}px` }}
         >
           Tag Preview
         </h3>

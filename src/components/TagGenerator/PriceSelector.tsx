@@ -39,7 +39,10 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
         className="bg-[#595555] rounded-t-lg flex items-center justify-between"
         style={{ padding: `${12 * scale}px` }}
       >
-        <h3 className="text-white font-bold" style={{ fontSize: `${22 * scale}px` }}>
+        <h3
+          className="text-white font-bold"
+          style={{ fontSize: `${22 * scale}px` }}
+        >
           Price
         </h3>
         <div className="flex items-center">
@@ -53,9 +56,9 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
             Selected:
           </span>
           <div
-            className="bg-white rounded-tr rounded-br border border-gray-300 text-center flex items-center justify-center"
+            className="bg-white rounded-tr rounded-br border border-gray-300 text-center flex items-center justify-center w-fit"
             style={{
-              width: `${80 * scale}px`,
+              minWidth: `${80 * scale}px`,
               height: `${28 * scale}px`,
               padding: `${4 * scale}px ${16 * scale}px`,
             }}
@@ -64,7 +67,7 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
               className="text-black"
               style={{ fontSize: `${14 * scale}px` }}
             >
-              ${selectedPrice.replace("$", "") || ""}
+              ${selectedPrice.replace("$", "") || recommendedPrice.replace("$", "")}
             </span>
           </div>
         </div>
@@ -77,7 +80,12 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
       >
         {/* Recommended Price Header */}
         <div
-          className="bg-[#EBF5FF] text-black border-[#004787] rounded-lg"
+          className={`rounded-lg cursor-default ${
+            selectedPrice === recommendedPrice || !selectedPrice
+              ? "bg-black text-white border-black shadow-[inset_0_0_0_4px_white]"
+              : "bg-[#EBF5FF] text-black border-[#004787]"
+          }`}
+          onClick={() => onPriceChange(recommendedPrice)}
           style={{
             borderWidth: `${3 * scale}px`,
             padding: `${8 * scale}px ${24 * scale}px`,
@@ -91,8 +99,22 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
               fontSize: `${24 * scale}px`,
             }}
           >
-            <span className="text-black">Recommended price :</span>
-            <span className="text-green-700 font-bold">
+            <span
+              className={`${
+                selectedPrice === recommendedPrice || !selectedPrice
+                  ? "text-white"
+                  : "text-black"
+              }`}
+            >
+              Recommended price :
+            </span>
+            <span
+              className={`${
+                selectedPrice === recommendedPrice || !selectedPrice
+                  ? "text-[#00FF22]"
+                  : "text-green-700"
+              } font-bold`}
+            >
               ${recommendedPrice}
             </span>
           </div>
@@ -113,7 +135,7 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
                   : "bg-[#EBF5FF] text-black border-[#004787]"
               }`}
               style={{
-                borderWidth: `${selectedPrice === price?1:3 * scale}px`,
+                borderWidth: `${selectedPrice === price ? 1 : 3 * scale}px`,
                 fontSize: `${28 * scale}px`,
                 minHeight: `${48 * scale}px`,
               }}
@@ -148,7 +170,7 @@ export const PriceSelector: React.FC<PriceSelectorProps> = ({
         anchorEl={customInputRef.current}
         placeholder={"Other Custom Price"}
         heading={"Custome Price"}
-        bgColor={'bg-[#D4FFFE]'}
+        bgColor={"bg-[#D4FFFE]"}
       />
     </div>
   );

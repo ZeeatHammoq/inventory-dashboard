@@ -128,7 +128,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 className="flex items-center text-white font-medium"
                 style={{ 
                   gap: `${12 * scale}px`,
-                  fontSize: `${14 * scale}px`
+                  fontSize: `${24 * scale}px`
                 }}
               >
                 <span className="hidden sm:inline">Color of the week</span>
@@ -136,8 +136,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 <div 
                   className="bg-green-500 rounded text-white font-bold"
                   style={{ 
-                    padding: `${4 * scale}px ${16 * scale}px`,
-                    fontSize: `${14 * scale}px`
+                    padding: `${8 * scale}px ${24 * scale}px`,
+                    fontSize: `${18 * scale}px`
                   }}
                 >
                   Green

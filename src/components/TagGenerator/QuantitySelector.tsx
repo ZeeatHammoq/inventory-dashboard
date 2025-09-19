@@ -50,9 +50,9 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
             Selected:
           </span>
           <div 
-            className="bg-white rounded-tr rounded-br border border-gray-300 text-center flex items-center justify-center"
+            className="bg-white rounded-tr rounded-br border border-gray-300 text-center flex items-center justify-center w-fit"
             style={{
-              width: `${80 * scale}px`,
+              minWidth: `${80 * scale}px`,
               height: `${28 * scale}px`,
               padding: `${4 * scale}px ${16 * scale}px`
             }}
