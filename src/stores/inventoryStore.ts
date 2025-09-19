@@ -11,10 +11,8 @@ export const useInventoryStore = create<InventoryState>((set,) => ({
 
     fetchInventoryData: async () => {
         set({ isLoading: true, error: null });
-        //'https://ai-lite-api.hammoq.com/v1/api/inventory-data'
-        //'http://localhost:8080/v1/api/inventory-data'
         try {
-            const response = await fetch('http://localhost:8080/v1/api/inventory-data');
+            const response = await fetch('https://ai-lite-api.hammoq.com/v1/api/inventory-data');
 
 
             if (!response.ok) {
