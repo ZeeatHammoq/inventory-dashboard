@@ -184,7 +184,7 @@ export const TagPreview: React.FC<TagPreviewProps> = ({
       >
         <div>
           <img
-            src={`/images/print-icon.png`}
+            src={`/images/print-icon.webp`}
             style={{
               width: `${64 * scale}px`,
               height: `${64 * scale}px`,

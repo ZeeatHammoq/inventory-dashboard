@@ -263,7 +263,7 @@ export const TagGenerator: React.FC = () => {
             >
               <div className="mb-4 lg:mb-6 transform group-hover:scale-110 transition-transform duration-300">
                 <img
-                  src={`/images/print-icon.png`}
+                  src={`/images/print-icon.webp`}
                   className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12"
                   alt={"Print"}
                 />
@@ -322,7 +322,7 @@ export const TagGenerator: React.FC = () => {
           >
             <div className="mb-3">
               <img
-                src={`/images/print-icon.png`}
+                src={`/images/print-icon.webp`}
                 className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12"
                 alt={"Print"}
               />

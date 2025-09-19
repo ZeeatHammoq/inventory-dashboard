@@ -30,12 +30,12 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     case "wares":
       itemImagePath = `/images/departments/${departmentName
         ?.toLowerCase()
-        .replace(/[^a-z]/g, "")}.png`;
+        .replace(/[^a-z]/g, "")}.webp`;
       break;
     case "electronics":
       itemImagePath = `/images/departments/${departmentName
         ?.toLowerCase()
-        .replace(/[^a-z]/g, "")}.png`;
+        .replace(/[^a-z]/g, "")}.webp`;
       break;
     default:
       itemImagePath = `/images/items/${departmentName
@@ -43,7 +43,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
         ?.replace(/[^a-z]/g, "")}/${itemName
         ?.toLowerCase()
         .replace(/^(men's |women's |unisex )/, "")
-        .replace(/[^a-z]/g, "")}.png`;
+        .replace(/[^a-z]/g, "")}.webp`;
       break;
   }
 
@@ -68,7 +68,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
               <img
                 src={`/images/departments/${departmentName
                   .toLowerCase()
-                  .replace(/[^a-z]/g, "")}.png`}
+                  .replace(/[^a-z]/g, "")}.webp`}
                 style={{ 
                   width: `${32 * scale}px`,
                   height: `${32 * scale}px`
